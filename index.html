@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loca Veículo</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #8FD44A;
+  --green-dark: #6BB832;
+  --green-light: #C5E89A;
+  --green-pale: #EAF5D5;
+  --navy: #1A2A5E;
+  --navy-mid: #253672;
+  --cream: #F2EDD7;
+  --cream-dark: #E8E0C0;
+  --text-mid: #3D4F7C;
+  --text-light: #7A8FB5;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: #b0b0b0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+.phone {
+  width: 390px;
+  height: 844px;
+  border-radius: 40px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4), 0 0 0 8px #111, 0 0 0 10px #444;
+  background: var(--green);
+}
+.screen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  transition: opacity 0.2s;
+}
+.screen.active { display: flex !important; }
+#s-locador-form.active { overflow-y: auto !important; }
+
+/* ── SHARED COMPONENTS ── */
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--navy);
+  cursor: pointer;
+  padding: 8px;
+  line-height: 1;
+}
+.back-btn-white { color: rgba(255,255,255,0.85); }
+
+.btn-navy {
+  width: 100%;
+  padding: 17px;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-navy:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,42,94,0.3); }
+.btn-navy:active { transform: translateY(0); }
+
+.btn-outline {
+  width: 100%;
+  padding: 15px;
+  background: transparent;
+  color: var(--navy);
+  border: 2.5px solid var(--navy);
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-outline:hover { background: var(--navy); color: #fff; }
+
+.btn-ghost {
+  width: 100%;
+  padding: 17px;
+  background: transparent;
+  color: var(--navy);
+  border: 2.5px solid var(--navy);
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-ghost:hover { background: rgba(26,42,94,0.1); }
+
+.field {
+  width: 100%;
+  padding: 15px 20px;
+  background: rgba(255,255,255,0.3);
+  border: 2px solid rgba(26,42,94,0.25);
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--navy);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.field::placeholder { color: rgba(26,42,94,0.45); }
+.field:focus { border-color: var(--navy); background: rgba(255,255,255,0.5); }
+
+.green-header {
+  background: var(--green);
+  padding: 20px 20px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.green-header-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.cream-body {
+  flex: 1;
+  background: var(--cream);
+  border-radius: 28px 28px 0 0;
+  overflow-y: auto;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── SCREEN 1: SPLASH ── */
+#s-splash {
+  background: var(--green);
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 40px 36px;
+}
+.splash-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 54px;
+  font-weight: 800;
+  color: var(--navy);
+  text-align: center;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+.splash-sub {
+  font-size: 17px;
+  color: var(--navy-mid);
+  text-align: center;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* ── SCREEN 2: LOGIN ── */
+#s-login {
+  background: var(--green);
+  overflow-y: auto;
+}
+.login-inner {
+  padding: 70px 36px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 100%;
+}
+.login-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+.login-sub {
+  font-size: 15px;
+  color: var(--navy-mid);
+  font-weight: 600;
+  opacity: 0.8;
+  margin-bottom: 28px;
+}
+.pwd-wrap { position: relative; }
+.pwd-wrap .field { padding-right: 52px; }
+.pwd-eye {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.45;
+  user-select: none;
+}
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0 18px;
+}
+.divider-line { flex: 1; height: 1.5px; background: rgba(26,42,94,0.18); }
+.divider-text { font-size: 13px; font-weight: 700; color: rgba(26,42,94,0.45); }
+.social-btn {
+  width: 100%;
+  padding: 13px 20px;
+  background: #fff;
+  border: 2px solid rgba(26,42,94,0.15);
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 10px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.social-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
+.s-icon {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.forgot {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  text-decoration: underline;
+  cursor: pointer;
+  margin: 10px 0 20px;
+}
+.signup-cta {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy-mid);
+  margin-top: 16px;
+}
+.signup-cta span {
+  font-weight: 800;
+  text-decoration: underline;
+  cursor: pointer;
+  color: var(--navy);
+}
+
+/* ── SCREEN 3: ESCOLHA TIPO ── */
+#s-escolha {
+  background: var(--green);
+  justify-content: center;
+  padding: 60px 28px 36px;
+  gap: 24px;
+}
+.escolha-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.1;
+}
+.escolha-sub {
+  font-size: 15px;
+  color: var(--navy-mid);
+  font-weight: 600;
+  opacity: 0.8;
+  margin-top: 6px;
+}
+.tipo-card {
+  background: var(--navy);
+  border-radius: 22px;
+  padding: 22px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+.tipo-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(26,42,94,0.3); }
+.tipo-emoji { font-size: 38px; line-height: 1; }
+.tipo-info { flex: 1; }
+.tipo-name { font-size: 20px; font-weight: 800; color: #fff; }
+.tipo-tagline { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.65); margin-top: 3px; }
+.tipo-arrow { font-size: 22px; color: rgba(255,255,255,0.5); }
+.tipo-hint {
+  text-align: center;
+  font-size: 13px;
+  color: rgba(26,42,94,0.5);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ── SCREEN 4: EXPLICAÇÃO ── */
+.expl-header {
+  padding: 48px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.expl-emoji { font-size: 52px; }
+.expl-htitle {
+  font-family: 'Sora', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+}
+.expl-hsub { font-size: 15px; color: rgba(255,255,255,0.65); font-weight: 600; }
+.expl-body {
+  flex: 1;
+  background: var(--cream);
+  border-radius: 28px 28px 0 0;
+  padding: 24px 20px 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.expl-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px 18px;
+}
+.expl-card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+.expl-card-text {
+  font-size: 14px;
+  color: var(--text-mid);
+  font-weight: 600;
+  line-height: 1.65;
+}
+.expl-example {
+  background: var(--green-pale);
+  border-left: 4px solid var(--green-dark);
+  border-radius: 0 12px 12px 0;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-top: 12px;
+  line-height: 1.55;
+}
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chip {
+  background: var(--green-pale);
+  border: 1.5px solid var(--green-light);
+  border-radius: 50px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.expl-footer {
+  background: var(--cream);
+  padding: 16px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* ── SCREEN 5: CRIAR CONTA ── */
+#s-criar {
+  background: var(--green);
+  overflow-y: auto;
+}
+.criar-inner {
+  padding: 70px 36px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 100%;
+}
+.type-tabs { display: flex; gap: 10px; }
+.type-tab {
+  flex: 1;
+  padding: 14px;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 0.2s;
+}
+.type-tab.active { opacity: 1; }
+
+/* ── SCREEN 6: INFO CADASTRAL LOCADOR ── */
+#s-info {
+  background: var(--green);
+  overflow-y: auto;
+}
+.info-inner {
+  padding: 70px 36px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 100%;
+}
+.big-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.05;
+}
+.field-group { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-size: 14px; font-weight: 800; color: var(--navy); padding-left: 6px; }
+
+/* ── SCREEN 7: CRIE CONTA LOCADOR (card style) ── */
+#s-locador-form {
+  background: var(--green);
+  flex-direction: column;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.form-card-list {
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+}
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.form-row:last-child { border-bottom: none; }
+.form-ico {
+  width: 42px; height: 42px;
+  background: var(--green-pale);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.form-ico svg { width: 20px; height: 20px; }
+.form-row-inner { flex: 1; min-width: 0; }
+.form-row-title { font-size: 14px; font-weight: 800; color: var(--navy); display: block; }
+.form-row-input {
+  border: none;
+  outline: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+  background: transparent;
+  width: 100%;
+}
+.form-row-input::placeholder { color: var(--text-light); }
+.eye { font-size: 18px; cursor: pointer; opacity: 0.4; user-select: none; }
+
+/* ── SCREEN 8: OFERTAS ── */
+#s-ofertas { background: var(--green); flex-direction: column; }
+.car-list-item {
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.car-list-item:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+.car-info { flex: 1; }
+.car-name { font-size: 15px; font-weight: 800; color: var(--navy); }
+.car-price { font-size: 13px; font-weight: 700; color: var(--navy); margin-top: 2px; }
+.car-detail { font-size: 12px; color: var(--text-light); font-weight: 600; margin-top: 2px; }
+
+/* ── SCREEN 9: DETALHES ── */
+#s-detalhes { background: var(--green); flex-direction: column; }
+.photo-slots { display: flex; gap: 10px; }
+.photo-slot {
+  flex: 1; height: 72px;
+  background: #fff;
+  border-radius: 14px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  border: 2px dashed var(--cream-dark);
+  cursor: pointer;
+}
+.photo-slot span { font-size: 10px; font-weight: 700; color: var(--text-light); }
+.info-block { background: #fff; border-radius: 16px; padding: 14px 16px; }
+.info-block-title { font-size: 13px; font-weight: 800; color: var(--navy); margin-bottom: 10px; }
+.info-row { display: flex; gap: 6px; margin-bottom: 5px; }
+.info-key { font-size: 12px; font-weight: 700; color: var(--text-light); min-width: 52px; }
+.info-val { font-size: 12px; font-weight: 700; color: var(--navy); }
+.cal-block { background: #fff; border-radius: 16px; padding: 14px 16px; }
+.cal-month { font-size: 14px; font-weight: 800; color: var(--navy); text-align: center; margin-bottom: 10px; }
+.cal-header { display: grid; grid-template-columns: repeat(7,1fr); text-align: center; margin-bottom: 6px; }
+.cal-dname { font-size: 10px; font-weight: 700; color: var(--text-light); }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+.cal-day {
+  aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--navy);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all 0.15s;
+}
+.cal-day:hover { background: var(--green-light); }
+.cal-day.avail { border-color: var(--green-dark); }
+.cal-day.sel { background: var(--navy); color: #fff; border-color: var(--navy); }
+.cal-day.empty { cursor: default; }
+
+/* ── SCREEN 10: CONFIRMAR ── */
+#s-confirmar { background: var(--green); flex-direction: column; }
+.confirm-block { background: #fff; border-radius: 16px; padding: 14px 16px; }
+.confirm-block-title { font-size: 13px; font-weight: 800; color: var(--navy); margin-bottom: 10px; }
+.c-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.c-line { font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+.c-line b { font-weight: 800; }
+.total-pill {
+  background: var(--green-pale);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 13px; font-weight: 800; color: var(--navy);
+  white-space: nowrap;
+}
+.pay-tabs { display: flex; gap: 8px; margin-bottom: 10px; }
+.pay-tab {
+  flex: 1; padding: 9px;
+  border-radius: 10px;
+  font-size: 12px; font-weight: 800;
+  text-align: center; cursor: pointer;
+  background: var(--cream); color: var(--navy);
+  border: none; transition: all 0.15s;
+}
+.pay-tab.on { background: var(--navy); color: #fff; }
+.pay-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--cream-dark);
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px; font-weight: 600; color: var(--navy);
+  outline: none; margin-bottom: 8px;
+}
+.confirm-footer {
+  padding: 14px 20px 28px;
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* ── SUCCESS ── */
+.success-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(26,42,94,0.93);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  z-index: 200;
+}
+.success-overlay.show { display: flex; }
+.s-icon-big { font-size: 72px; }
+.s-title { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 800; color: #fff; text-align: center; }
+.s-sub { font-size: 15px; color: rgba(255,255,255,0.65); text-align: center; font-weight: 600; line-height: 1.5; }
+.s-close {
+  margin-top: 16px;
+  padding: 14px 40px;
+  background: var(--green);
+  color: var(--navy);
+  border: none;
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 17px; font-weight: 800;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: rgba(26,42,94,0.15); border-radius: 2px; }
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="s-icon-big">🎉</div>
+  <div class="s-title">Reserva Confirmada!</div>
+  <div class="s-sub">Seu veículo foi reservado<br>com sucesso. Verifique<br>seu e-mail para os detalhes.</div>
+  <button class="s-close" id="successCloseBtn">Voltar ao início</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 1 — SPLASH
+══════════════════════════════════════ -->
+<div class="screen active" id="s-splash">
+  <div class="splash-title">LOCA<br>VEÍCULO</div>
+  <div class="splash-sub">Encontre e alugue veículos<br>de forma segura</div>
+  <!-- Car SVG -->
+  <svg width="260" height="150" viewBox="0 0 300 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="140" y="40" width="30" height="80" rx="3" fill="#6BB832" opacity="0.4"/>
+    <rect x="175" y="20" width="25" height="100" rx="3" fill="#6BB832" opacity="0.3"/>
+    <rect x="205" y="55" width="35" height="65" rx="3" fill="#6BB832" opacity="0.35"/>
+    <rect x="245" y="35" width="28" height="85" rx="3" fill="#6BB832" opacity="0.25"/>
+    <ellipse cx="60" cy="100" rx="28" ry="38" fill="#1A2A5E" opacity="0.85" transform="rotate(-15 60 100)"/>
+    <ellipse cx="45" cy="110" rx="20" ry="30" fill="#253672" opacity="0.7" transform="rotate(5 45 110)"/>
+    <line x1="30" y1="130" x2="290" y2="130" stroke="#1A2A5E" stroke-width="2" opacity="0.3"/>
+    <rect x="80" y="90" width="175" height="40" rx="8" fill="#1A2A5E"/>
+    <path d="M110 90 C115 65 135 55 165 55 L215 55 C235 55 248 65 252 90" fill="#1A2A5E"/>
+    <path d="M118 88 C121 72 133 63 155 63 L200 63 C218 63 228 72 230 88 Z" fill="#7EC8E3" opacity="0.6"/>
+    <line x1="178" y1="63" x2="175" y2="88" stroke="#1A2A5E" stroke-width="2"/>
+    <circle cx="120" cy="132" r="16" fill="#1A2A5E"/>
+    <circle cx="120" cy="132" r="9" fill="#7EC8E3" opacity="0.5"/>
+    <circle cx="215" cy="132" r="16" fill="#1A2A5E"/>
+    <circle cx="215" cy="132" r="9" fill="#7EC8E3" opacity="0.5"/>
+    <rect x="252" y="102" width="8" height="8" rx="2" fill="#7EC8E3"/>
+  </svg>
+  <div style="display:flex;flex-direction:column;gap:12px;width:100%;">
+    <button class="btn-navy" id="splashEntrar">Entrar</button>
+    <button class="btn-ghost" id="splashCadastrar">Cadastre-se</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 2 — LOGIN
+══════════════════════════════════════ -->
+<div class="screen" id="s-login">
+  <div class="login-inner">
+    <button class="back-btn" id="loginBack" style="align-self:flex-start;margin-bottom:8px;">←</button>
+    <div class="login-title">Bem-vindo<br>de volta! 👋</div>
+    <div class="login-sub">Entre na sua conta para continuar</div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <input class="field" type="email" placeholder="Seu e-mail">
+      <div class="pwd-wrap">
+        <input class="field" type="password" placeholder="Sua senha" id="loginPwd">
+        <span class="pwd-eye" id="loginEye">👁</span>
+      </div>
+    </div>
+    <div class="forgot">Esqueci minha senha</div>
+    <button class="btn-navy" id="loginEnter">Entrar</button>
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-text">ou continue com</div>
+      <div class="divider-line"></div>
+    </div>
+    <button class="social-btn" id="loginGoogle">
+      <div class="s-icon" style="background:#fff;border:1.5px solid #eee;">
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+      </div>
+      Continuar com Google
+    </button>
+    <button class="social-btn" id="loginApple">
+      <div class="s-icon" style="background:#000;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="white">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98l-.09.06c-.22.15-2.17 1.27-2.15 3.8.03 3.02 2.65 4.03 2.68 4.04l-.08.28zM13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+      </div>
+      Continuar com Apple
+    </button>
+    <button class="social-btn" id="loginFacebook">
+      <div class="s-icon" style="background:#1877F2;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="white">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+      </div>
+      Continuar com Facebook
+    </button>
+    <div class="signup-cta">Não tem conta? <span id="loginGoRegister">Cadastre-se</span></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 3 — ESCOLHA TIPO DE CONTA
+══════════════════════════════════════ -->
+<div class="screen" id="s-escolha">
+  <button class="back-btn" id="escolhaBack" style="position:absolute;top:20px;left:20px;">←</button>
+  <div style="display:flex;flex-direction:column;gap:20px;">
+    <div>
+      <div class="escolha-title">Escolha o tipo<br>de conta</div>
+      <div class="escolha-sub">Selecione o perfil que melhor descreve você</div>
+    </div>
+    <button class="tipo-card" id="escolhaLocatario">
+      <div class="tipo-emoji">🚗</div>
+      <div class="tipo-info">
+        <div class="tipo-name">Locatário</div>
+        <div class="tipo-tagline">Quero alugar um veículo</div>
+      </div>
+      <div class="tipo-arrow">→</div>
+    </button>
+    <button class="tipo-card" id="escolhaLocador" style="background:var(--navy-mid);">
+      <div class="tipo-emoji">🔑</div>
+      <div class="tipo-info">
+        <div class="tipo-name">Locador</div>
+        <div class="tipo-tagline">Quero disponibilizar meu veículo</div>
+      </div>
+      <div class="tipo-arrow">→</div>
+    </button>
+    <div class="tipo-hint">Não sabe a diferença? Clique em qualquer<br>opção para entender melhor 👆</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 4A — EXPLICAÇÃO LOCATÁRIO
+══════════════════════════════════════ -->
+<div class="screen" id="s-expl-locatario">
+  <div class="expl-header" style="background:var(--navy);">
+    <button class="back-btn back-btn-white" id="explLocatarioBack" style="align-self:flex-start;">←</button>
+    <div class="expl-emoji">🚗</div>
+    <div class="expl-htitle">Você seria<br>o Locatário</div>
+    <div class="expl-hsub">A pessoa que aluga o carro</div>
+  </div>
+  <div class="expl-body">
+    <div class="expl-card">
+      <div class="expl-card-title">📖 O que significa?</div>
+      <div class="expl-card-text">
+        <strong>Locatário</strong> é a pessoa que <strong>pega o carro emprestado</strong> pagando um valor por dia. É você que vai usar o veículo de outra pessoa por um período combinado.
+      </div>
+      <div class="expl-example">
+        💡 <strong>Exemplo:</strong> Você precisa de um carro para viajar no feriado. Você busca um veículo disponível no app, paga a diária e usa o carro. Você é o <strong>locatário</strong>.
+      </div>
+    </div>
+    <div class="expl-card">
+      <div class="expl-card-title">✅ O que você pode fazer?</div>
+      <div class="chip-row">
+        <span class="chip">🔍 Buscar veículos</span>
+        <span class="chip">📅 Escolher datas</span>
+        <span class="chip">💳 Pagar online</span>
+        <span class="chip">⭐ Avaliar o locador</span>
+        <span class="chip">🚘 Usar o carro</span>
+      </div>
+    </div>
+    <div class="expl-card">
+      <div class="expl-card-title">💰 Como funciona o pagamento?</div>
+      <div class="expl-card-text">
+        Você paga uma <strong>diária</strong> (valor por dia) diretamente pelo app, de forma segura. O total é calculado automaticamente conforme os dias que você escolher.
+      </div>
+    </div>
+    <div style="height:20px;flex-shrink:0;"></div>
+  </div>
+  <div class="expl-footer">
+    <button class="btn-navy" id="explLocatarioCriar">Sou Locatário — Criar conta</button>
+    <button class="btn-outline" id="explLocatarioVerOutro">Ver o que é Locador</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 4B — EXPLICAÇÃO LOCADOR
+══════════════════════════════════════ -->
+<div class="screen" id="s-expl-locador">
+  <div class="expl-header" style="background:var(--navy-mid);">
+    <button class="back-btn back-btn-white" id="explLocadorBack" style="align-self:flex-start;">←</button>
+    <div class="expl-emoji">🔑</div>
+    <div class="expl-htitle">Você seria<br>o Locador</div>
+    <div class="expl-hsub">A pessoa que disponibiliza o carro</div>
+  </div>
+  <div class="expl-body">
+    <div class="expl-card">
+      <div class="expl-card-title">📖 O que significa?</div>
+      <div class="expl-card-text">
+        <strong>Locador</strong> é a pessoa que <strong>disponibiliza o próprio carro</strong> para outras pessoas alugarem. Você cadastra seu veículo no app e recebe dinheiro por isso.
+      </div>
+      <div class="expl-example">
+        💡 <strong>Exemplo:</strong> Seu carro fica parado na garagem durante a semana. Você o cadastra no app, outras pessoas alugam e você <strong>recebe dinheiro</strong> sem precisar fazer nada além disso. Você é o <strong>locador</strong>.
+      </div>
+    </div>
+    <div class="expl-card">
+      <div class="expl-card-title">✅ O que você pode fazer?</div>
+      <div class="chip-row">
+        <span class="chip">📸 Cadastrar seu carro</span>
+        <span class="chip">📅 Definir disponibilidade</span>
+        <span class="chip">💰 Receber pagamentos</span>
+        <span class="chip">⭐ Avaliar locatários</span>
+        <span class="chip">📊 Ver relatórios</span>
+      </div>
+    </div>
+    <div class="expl-card">
+      <div class="expl-card-title">💰 Como recebo o dinheiro?</div>
+      <div class="expl-card-text">
+        Quando alguém alugar seu veículo, o valor é depositado diretamente na sua conta. Você define o preço da diária e controla quando seu carro estará disponível.
+      </div>
+    </div>
+    <div style="height:20px;flex-shrink:0;"></div>
+  </div>
+  <div class="expl-footer">
+    <button class="btn-navy" id="explLocadorCriar" style="background:var(--navy-mid);">Sou Locador — Criar conta</button>
+    <button class="btn-outline" id="explLocadorVerOutro">Ver o que é Locatário</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 5 — CRIAR CONTA
+══════════════════════════════════════ -->
+<div class="screen" id="s-criar">
+  <div class="criar-inner">
+    <button class="back-btn" id="criarBack" style="align-self:flex-start;">←</button>
+    <div style="font-family:'Sora',sans-serif;font-size:34px;font-weight:800;color:var(--navy);line-height:1.05;">Criar<br>conta</div>
+    <div class="type-tabs">
+      <button class="type-tab active" id="tabLocatario">Locatário</button>
+      <button class="type-tab" id="tabLocador">Locador</button>
+    </div>
+    <div style="font-size:15px;font-weight:700;color:var(--navy-mid);opacity:0.85;">Preencha suas informações</div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <input class="field" type="text" placeholder="Nome">
+      <input class="field" type="email" placeholder="E-mail">
+      <input class="field" type="password" placeholder="Senha">
+      <input class="field" type="password" placeholder="Confirmação de senha">
+    </div>
+    <button class="btn-navy" id="criarContinuar">Continuar</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 6 — INFO CADASTRAL (locador)
+══════════════════════════════════════ -->
+<div class="screen" id="s-info">
+  <div class="info-inner">
+    <button class="back-btn" id="infoBack" style="align-self:flex-start;">←</button>
+    <div>
+      <div class="big-title">Informações<br>cadastrais</div>
+      <div style="font-size:15px;font-weight:700;color:var(--navy-mid);margin-top:8px;opacity:0.8;">Conta de locador</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="field-group"><span class="field-label">Nome</span><input class="field" type="text" placeholder=""></div>
+      <div class="field-group"><span class="field-label">E-mail</span><input class="field" type="email" placeholder=""></div>
+      <div class="field-group"><span class="field-label">Senha</span><input class="field" type="password" placeholder=""></div>
+      <div class="field-group"><span class="field-label">Telefone</span><input class="field" type="tel" placeholder=""></div>
+    </div>
+    <button class="btn-navy" id="infoContinuar">Continuar</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 7 — LOCADOR FORM (card style)
+══════════════════════════════════════ -->
+<div class="screen" id="s-locador-form">
+  <div style="background:var(--green);display:flex;align-items:center;gap:12px;padding:20px 20px 16px;flex-shrink:0;">
+    <button class="back-btn" id="locadorFormBack" style="padding:0;">←</button>
+    <span style="font-family:'Sora',sans-serif;font-size:19px;font-weight:700;color:var(--navy);">Crie sua conta (Locador)</span>
+  </div>
+  <div style="flex:1;background:var(--cream);border-radius:28px 28px 0 0;overflow-y:auto;padding:24px 20px 40px;display:flex;flex-direction:column;gap:12px;">
+
+    <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800;color:var(--navy);text-align:center;margin-bottom:4px;">Adicione suas informações:</div>
+
+    <!-- DADOS PESSOAIS -->
+    <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:4px;">Dados Pessoais</div>
+
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Nome completo</div>
+        <input id="lf-nome" type="text" placeholder="Digite seu nome completo" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:18px;padding:14px 16px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:800;color:var(--navy);">CPF</div>
+          <input id="lf-cpf" type="text" placeholder="000.000.000-00" maxlength="14" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+        </div>
+        <span id="cpf-status" style="font-size:16px;flex-shrink:0;width:20px;text-align:center;"></span>
+      </div>
+      <div id="cpf-feedback" style="display:none;font-size:12px;font-weight:700;margin-top:6px;padding-left:54px;"></div>
+    </div>
+
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">E-mail</div>
+        <input id="lf-email" type="email" placeholder="Digite seu e-mail" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+    </div>
+
+    <!-- TELEFONES -->
+    <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:4px;">Telefones</div>
+
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 9.5 19.79 19.79 0 0 1 2 3.22 2 2 0 0 1 4 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Telefone principal</div>
+        <input id="lf-tel1" type="tel" placeholder="(00) 00000-0000" maxlength="15" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 9.5 19.79 19.79 0 0 1 2 3.22 2 2 0 0 1 4 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Telefone de contato</div>
+        <input id="lf-tel2" type="tel" placeholder="(00) 00000-0000" maxlength="15" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+    </div>
+
+    <!-- ENDEREÇO -->
+    <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:4px;">Endereço Residencial</div>
+
+    <div style="background:#fff;border-radius:18px;padding:14px 16px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:800;color:var(--navy);">CEP</div>
+          <input id="lf-cep" type="text" placeholder="00000-000" maxlength="9" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+        </div>
+        <span id="cep-status" style="font-size:16px;flex-shrink:0;width:20px;text-align:center;"></span>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><path d="M3 12h18M3 6l9-3 9 3M3 18l9 3 9-3"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Rua / Logradouro</div>
+        <input id="lf-rua" type="text" placeholder="Preenchido pelo CEP" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <div style="flex:0.4;background:#fff;border-radius:18px;padding:14px 16px;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Número</div>
+        <input id="lf-num" type="text" placeholder="123" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+      <div style="flex:0.6;background:#fff;border-radius:18px;padding:14px 16px;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Complemento</div>
+        <input id="lf-comp" type="text" placeholder="Apto, Bloco..." style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Bairro</div>
+        <input id="lf-bairro" type="text" placeholder="Preenchido pelo CEP" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <div style="flex:0.65;background:#fff;border-radius:18px;padding:14px 16px;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Cidade</div>
+        <input id="lf-cidade" type="text" placeholder="Preenchido pelo CEP" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+      <div style="flex:0.35;background:#fff;border-radius:18px;padding:14px 16px;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Estado</div>
+        <input id="lf-uf" type="text" placeholder="UF" maxlength="2" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+    </div>
+
+    <!-- SENHA -->
+    <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:4px;">Senha de Acesso</div>
+
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Senha</div>
+        <input id="lfPwd1" type="password" placeholder="Crie uma senha" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+      <span id="lfEye1" style="font-size:18px;cursor:pointer;opacity:0.4;user-select:none;">👁</span>
+    </div>
+
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><path d="m9 16 2 2 4-4" stroke="#4A7C3F"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Confirme sua senha</div>
+        <input id="lfPwd2" type="password" placeholder="Repita sua senha" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+      <span id="lfEye2" style="font-size:18px;cursor:pointer;opacity:0.4;user-select:none;">👁</span>
+    </div>
+
+    <button class="btn-navy" id="locadorFormContinuar" style="margin-top:8px;">Continuar</button>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN: CADASTRO DO VEÍCULO
+══════════════════════════════════════ -->
+<div class="screen" id="s-cad-veiculo">
+  <div style="background:var(--green);display:flex;align-items:center;gap:12px;padding:20px 20px 16px;flex-shrink:0;position:sticky;top:0;z-index:10;">
+    <button class="back-btn" id="cadVeiculoBack" style="padding:0;">←</button>
+    <span style="font-family:'Sora',sans-serif;font-size:19px;font-weight:700;color:var(--navy);">Cadastrar Veículo</span>
+  </div>
+  <div style="background:var(--cream);border-radius:28px 28px 0 0;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;padding:24px 20px 40px;display:flex;flex-direction:column;gap:12px;">
+
+    <!-- Progresso -->
+    <div style="background:#fff;border-radius:16px;padding:14px 18px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:13px;font-weight:800;color:var(--navy);">Seu veículo está quase pronto! 🚗</span>
+        <span style="font-size:12px;font-weight:700;color:var(--green-dark);">Passo 2 de 2</span>
+      </div>
+      <div style="height:6px;background:var(--cream-dark);border-radius:3px;">
+        <div style="height:6px;width:100%;background:var(--green-dark);border-radius:3px;"></div>
+      </div>
+    </div>
+
+    <!-- FOTOS -->
+    <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:4px;">Fotos do Veículo</div>
+    <div style="background:#fff;border-radius:18px;padding:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--text-mid);margin-bottom:12px;">Adicione até 3 fotos do seu veículo</div>
+      <div style="display:flex;gap:10px;">
+        <div class="foto-slot" id="foto1" style="flex:1;height:80px;border-radius:14px;border:2px dashed var(--cream-dark);background:var(--green-pale);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6BB832" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span style="font-size:10px;font-weight:700;color:var(--green-dark);">+ Foto</span>
+        </div>
+        <div class="foto-slot" id="foto2" style="flex:1;height:80px;border-radius:14px;border:2px dashed var(--cream-dark);background:var(--green-pale);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6BB832" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span style="font-size:10px;font-weight:700;color:var(--green-dark);">+ Foto</span>
+        </div>
+        <div class="foto-slot" id="foto3" style="flex:1;height:80px;border-radius:14px;border:2px dashed var(--cream-dark);background:var(--green-pale);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6BB832" stroke-width="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span style="font-size:10px;font-weight:700;color:var(--green-dark);">+ Foto</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DADOS DO VEÍCULO -->
+    <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:4px;">Dados do Veículo</div>
+
+    <!-- Tipo -->
+    <div style="background:#fff;border-radius:18px;padding:14px 16px;">
+      <div style="font-size:13px;font-weight:800;color:var(--navy);margin-bottom:10px;">Tipo de veículo</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;" id="tipoVeiculoGroup">
+        <button class="tipo-veiculo-btn active-tipo" data-tipo="Passeio" style="padding:8px 14px;border-radius:50px;border:2px solid var(--navy);background:var(--navy);color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🚗 Passeio</button>
+        <button class="tipo-veiculo-btn" data-tipo="SUV" style="padding:8px 14px;border-radius:50px;border:2px solid var(--cream-dark);background:#fff;color:var(--navy);font-family:Nunito,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🚙 SUV</button>
+        <button class="tipo-veiculo-btn" data-tipo="Pickup" style="padding:8px 14px;border-radius:50px;border:2px solid var(--cream-dark);background:#fff;color:var(--navy);font-family:Nunito,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🛻 Pickup</button>
+        <button class="tipo-veiculo-btn" data-tipo="Van" style="padding:8px 14px;border-radius:50px;border:2px solid var(--cream-dark);background:#fff;color:var(--navy);font-family:Nunito,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🚐 Van</button>
+        <button class="tipo-veiculo-btn" data-tipo="Moto" style="padding:8px 14px;border-radius:50px;border:2px solid var(--cream-dark);background:#fff;color:var(--navy);font-family:Nunito,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🏍️ Moto</button>
+      </div>
+    </div>
+
+    <!-- Marca -->
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Marca</div>
+        <input id="cv-marca" type="text" placeholder="Ex: Honda, Toyota, Fiat..." style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+    </div>
+
+    <!-- Modelo -->
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v5a2 2 0 0 1-2 2h-2"/><circle cx="9" cy="20" r="1"/><circle cx="20" cy="20" r="1"/><path d="M9 17h10l1-5H8l1 5z"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Modelo</div>
+        <input id="cv-modelo" type="text" placeholder="Ex: HR-V, Corolla, Cronos..." style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+    </div>
+
+    <!-- Ano + Placa lado a lado -->
+    <div style="display:flex;gap:10px;">
+      <div style="flex:0.45;background:#fff;border-radius:18px;padding:14px 16px;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Ano</div>
+        <input id="cv-ano" type="text" placeholder="2023" maxlength="4" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+      <div style="flex:0.55;background:#fff;border-radius:18px;padding:14px 16px;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Placa</div>
+        <input id="cv-placa" type="text" placeholder="ABC-1234" maxlength="8" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;text-transform:uppercase;">
+      </div>
+    </div>
+
+    <!-- Cor -->
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M12 2v20"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Cor</div>
+        <input id="cv-cor" type="text" placeholder="Ex: Branco, Preto, Prata..." style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+      </div>
+    </div>
+
+    <!-- Câmbio -->
+    <div style="background:#fff;border-radius:18px;padding:14px 16px;">
+      <div style="font-size:13px;font-weight:800;color:var(--navy);margin-bottom:10px;">Tipo de câmbio</div>
+      <div style="display:flex;gap:10px;" id="cambioGroup">
+        <button class="cambio-btn active-cambio" data-cambio="Automático" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--navy);background:var(--navy);color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">⚙️ Automático</button>
+        <button class="cambio-btn" data-cambio="Manual" style="flex:1;padding:10px;border-radius:12px;border:2px solid var(--cream-dark);background:#fff;color:var(--navy);font-family:Nunito,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🔧 Manual</button>
+      </div>
+    </div>
+
+    <!-- PRECIFICAÇÃO -->
+    <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:4px;">Valores de Locação</div>
+
+    <!-- Valor diário -->
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Valor diário</div>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <span style="font-size:14px;font-weight:700;color:var(--text-light);">R$</span>
+          <input id="cv-diario" type="number" placeholder="0,00" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Valor semanal -->
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;border:2px solid var(--green-dark);">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:14px;font-weight:800;color:var(--navy);">Valor semanal</span>
+          <span style="font-size:10px;font-weight:800;background:var(--green-dark);color:#fff;padding:2px 8px;border-radius:50px;">OBRIGATÓRIO</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <span style="font-size:14px;font-weight:700;color:var(--text-light);">R$</span>
+          <input id="cv-semanal" type="number" placeholder="0,00" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Valor mensal -->
+    <div style="background:#fff;border-radius:18px;display:flex;align-items:center;gap:12px;padding:14px 16px;">
+      <div style="width:42px;height:42px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A7C3F" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);">Valor mensal</div>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <span style="font-size:14px;font-weight:700;color:var(--text-light);">R$</span>
+          <input id="cv-mensal" type="number" placeholder="0,00" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Caução -->
+    <div style="background:#fff;border-radius:18px;padding:14px 16px;border:2px solid #e8a020;">
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:42px;height:42px;background:#FFF3E0;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e8a020" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+            <span style="font-size:14px;font-weight:800;color:var(--navy);">Valor de caução</span>
+            <span style="font-size:10px;font-weight:800;background:#e8a020;color:#fff;padding:2px 8px;border-radius:50px;">OBRIGATÓRIO</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:14px;font-weight:700;color:var(--text-light);">R$</span>
+            <input id="cv-caucao" type="number" placeholder="0,00" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+          </div>
+        </div>
+      </div>
+      <div style="background:#FFF3E0;border-radius:10px;padding:10px 12px;margin-top:10px;display:flex;gap:8px;align-items:flex-start;">
+        <span style="font-size:16px;">ℹ️</span>
+        <span style="font-size:12px;font-weight:600;color:#a06010;line-height:1.5;">O valor de caução é cobrado no fechamento do contrato como garantia. Ele é devolvido ao locatário ao final da locação, caso não haja danos ao veículo.</span>
+      </div>
+    </div>
+
+    <!-- Seguro opcional -->
+    <div style="background:#fff;border-radius:18px;padding:14px 16px;border:2px solid #5C6BC0;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:42px;height:42px;background:#EDE7F6;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5C6BC0" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+            <span style="font-size:14px;font-weight:800;color:var(--navy);">Seguro opcional</span>
+            <span style="font-size:10px;font-weight:800;background:#5C6BC0;color:#fff;padding:2px 8px;border-radius:50px;">OPCIONAL</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:14px;font-weight:700;color:var(--text-light);">R$</span>
+            <input id="cv-seguro" type="number" placeholder="0,00" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:600;color:var(--navy);background:transparent;width:100%;">
+          </div>
+        </div>
+        <div id="seguroToggle" style="width:44px;height:26px;background:#ccc;border-radius:13px;cursor:pointer;position:relative;flex-shrink:0;transition:background 0.2s;">
+          <div id="seguroThumb" style="width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);"></div>
+        </div>
+      </div>
+      <div style="background:#EDE7F6;border-radius:10px;padding:10px 12px;margin-top:10px;display:flex;gap:8px;align-items:flex-start;">
+        <span style="font-size:16px;">🛡️</span>
+        <span style="font-size:12px;font-weight:600;color:#3949AB;line-height:1.5;">Ofereça um seguro adicional ao locatário. O valor será cobrado junto com a diária e garante mais proteção para o seu veículo.</span>
+      </div>
+    </div>
+
+    <!-- Descrição adicional -->
+    <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:4px;">Informações Adicionais</div>
+
+    <div style="background:#fff;border-radius:18px;padding:14px 16px;">
+      <div style="font-size:14px;font-weight:800;color:var(--navy);margin-bottom:8px;">Descrição do veículo</div>
+      <textarea id="cv-descricao" placeholder="Descreva seu veículo: itens inclusos, condições de uso, observações importantes..." style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:13px;font-weight:600;color:var(--navy);background:transparent;width:100%;resize:none;height:80px;line-height:1.6;color:var(--navy);" ></textarea>
+    </div>
+
+    <!-- Botão -->
+    <button class="btn-navy" id="cadVeiculoSalvar" style="margin-top:8px;">
+      ✅ Cadastrar Veículo
+    </button>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SCREEN 8 — OFERTAS
+══════════════════════════════════════ -->
+<div class="screen" id="s-ofertas">
+  <div class="green-header" style="flex-direction:column;gap:10px;padding-bottom:12px;">
+    <div style="display:flex;align-items:center;gap:12px;width:100%;">
+      <button class="back-btn" id="ofertasBack" style="padding:0;">←</button>
+      <span class="green-header-title">Veículos Disponíveis</span>
+    </div>
+    <!-- Filtro tipo -->
+    <div style="display:flex;gap:8px;width:100%;">
+      <button class="filtro-btn active-filtro" data-filtro="carros" id="filtroCarros" style="flex:1;padding:8px 0;border-radius:50px;border:2px solid var(--navy);background:var(--navy);color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">🚗 Carros</button>
+      <button class="filtro-btn" data-filtro="motos" id="filtroMotos" style="flex:1;padding:8px 0;border-radius:50px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:var(--navy);font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">🏍️ Motos</button>
+      <button class="filtro-btn" data-filtro="pesados" id="filtroPesados" style="flex:1;padding:8px 0;border-radius:50px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:var(--navy);font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">🚛 Pesados</button>
+    </div>
+  </div>
+  <div class="cream-body">
+    <!-- Banner destaque -->
+    <div style="width:100%;height:140px;border-radius:20px;overflow:hidden;flex-shrink:0;position:relative;">
+      <svg viewBox="0 0 350 140" fill="none" width="100%" height="140">
+        <rect width="350" height="140" fill="#b8d4a0"/>
+        <rect x="0" y="85" width="350" height="55" fill="#8ab870"/>
+        <rect x="60" y="48" width="230" height="50" rx="8" fill="#e0e0e0"/>
+        <path d="M90 48 C98 25 118 14 155 14 L220 14 C250 14 268 25 272 48" fill="#cfcfcf"/>
+        <rect x="98" y="18" width="70" height="28" rx="4" fill="#87CEEB" opacity="0.7"/>
+        <rect x="174" y="18" width="90" height="28" rx="4" fill="#87CEEB" opacity="0.7"/>
+        <circle cx="110" cy="100" r="16" fill="#555"/><circle cx="110" cy="100" r="9" fill="#999"/>
+        <circle cx="240" cy="100" r="16" fill="#555"/><circle cx="240" cy="100" r="9" fill="#999"/>
+        <rect x="270" y="62" width="12" height="10" rx="2" fill="#ffe066"/>
+      </svg>
+      <div style="position:absolute;bottom:10px;left:14px;background:rgba(26,42,94,0.85);border-radius:10px;padding:5px 12px;">
+        <span style="font-size:12px;font-weight:800;color:#fff;">⭐ Destaque da semana</span>
+      </div>
+    </div>
+
+    <!-- LISTA CARROS -->
+    <div id="lista-carros">
+      <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:2px;">Disponíveis agora</div>
+
+      <div class="car-list-item" id="carItem1" style="flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <svg viewBox="0 0 90 55" fill="none" width="80" height="50" style="flex-shrink:0;border-radius:10px;">
+            <rect width="90" height="55" rx="6" fill="#ffe0e0"/>
+            <rect x="10" y="22" width="70" height="20" rx="5" fill="#c0392b"/>
+            <path d="M22 22 C25 13 33 8 48 8 L63 8 C74 8 80 13 82 22" fill="#a93226"/>
+            <rect x="24" y="10" width="20" height="10" rx="2" fill="#87CEEB" opacity="0.6"/>
+            <rect x="46" y="10" width="27" height="10" rx="2" fill="#87CEEB" opacity="0.6"/>
+            <circle cx="25" cy="43" r="7" fill="#555"/><circle cx="25" cy="43" r="4" fill="#aaa"/>
+            <circle cx="65" cy="43" r="7" fill="#555"/><circle cx="65" cy="43" r="4" fill="#aaa"/>
+          </svg>
+          <div style="flex:1;">
+            <div class="car-name">Honda HR-V</div>
+            <div style="font-size:11px;color:var(--text-light);font-weight:700;">2023 · Automático · Branco</div>
+            <div style="font-size:12px;font-weight:800;color:var(--green-dark);margin-top:2px;">R$ 180/dia &nbsp;·&nbsp; R$ 980/sem</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--cream-dark);padding-top:8px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:28px;height:28px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;">M</div>
+            <div>
+              <div style="font-size:12px;font-weight:800;color:var(--navy);">Maria</div>
+              <div style="font-size:11px;color:var(--text-light);font-weight:600;">São Paulo · Pinheiros</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:13px;font-weight:800;color:#F5C842;">★ 4.8</div>
+            <div style="font-size:10px;color:var(--text-light);font-weight:600;">32 aval.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-list-item" id="carItem2" style="flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <svg viewBox="0 0 90 55" fill="none" width="80" height="50" style="flex-shrink:0;border-radius:10px;">
+            <rect width="90" height="55" rx="6" fill="#e8f5e9"/>
+            <rect x="10" y="22" width="70" height="20" rx="5" fill="#388e3c"/>
+            <path d="M22 22 C25 13 33 8 48 8 L63 8 C74 8 80 13 82 22" fill="#2e7d32"/>
+            <rect x="24" y="10" width="20" height="10" rx="2" fill="#87CEEB" opacity="0.6"/>
+            <rect x="46" y="10" width="27" height="10" rx="2" fill="#87CEEB" opacity="0.6"/>
+            <circle cx="25" cy="43" r="7" fill="#333"/><circle cx="25" cy="43" r="4" fill="#888"/>
+            <circle cx="65" cy="43" r="7" fill="#333"/><circle cx="65" cy="43" r="4" fill="#888"/>
+          </svg>
+          <div style="flex:1;">
+            <div class="car-name">Fiat Cronos</div>
+            <div style="font-size:11px;color:var(--text-light);font-weight:700;">2022 · Manual · Verde</div>
+            <div style="font-size:12px;font-weight:800;color:var(--green-dark);margin-top:2px;">R$ 150/dia &nbsp;·&nbsp; R$ 800/sem</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--cream-dark);padding-top:8px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:28px;height:28px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;">J</div>
+            <div>
+              <div style="font-size:12px;font-weight:800;color:var(--navy);">João</div>
+              <div style="font-size:11px;color:var(--text-light);font-weight:600;">São Paulo · Vila Madalena</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:13px;font-weight:800;color:#F5C842;">★ 4.6</div>
+            <div style="font-size:10px;color:var(--text-light);font-weight:600;">18 aval.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="car-list-item" id="carItem3" style="flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <svg viewBox="0 0 90 55" fill="none" width="80" height="50" style="flex-shrink:0;border-radius:10px;">
+            <rect width="90" height="55" rx="6" fill="#e8eaf6"/>
+            <rect x="10" y="22" width="70" height="20" rx="5" fill="#9e9e9e"/>
+            <path d="M22 22 C25 13 33 8 48 8 L63 8 C74 8 80 13 82 22" fill="#757575"/>
+            <rect x="24" y="10" width="20" height="10" rx="2" fill="#87CEEB" opacity="0.6"/>
+            <rect x="46" y="10" width="27" height="10" rx="2" fill="#87CEEB" opacity="0.6"/>
+            <circle cx="25" cy="43" r="7" fill="#333"/><circle cx="25" cy="43" r="4" fill="#888"/>
+            <circle cx="65" cy="43" r="7" fill="#333"/><circle cx="65" cy="43" r="4" fill="#888"/>
+          </svg>
+          <div style="flex:1;">
+            <div class="car-name">VW Polo</div>
+            <div style="font-size:11px;color:var(--text-light);font-weight:700;">2023 · Automático · Prata</div>
+            <div style="font-size:12px;font-weight:800;color:var(--green-dark);margin-top:2px;">R$ 130/dia &nbsp;·&nbsp; R$ 700/sem</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--cream-dark);padding-top:8px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:28px;height:28px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;">A</div>
+            <div>
+              <div style="font-size:12px;font-weight:800;color:var(--navy);">Ana</div>
+              <div style="font-size:11px;color:var(--text-light);font-weight:600;">São Paulo · Moema</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:13px;font-weight:800;color:#F5C842;">★ 4.9</div>
+            <div style="font-size:10px;color:var(--text-light);font-weight:600;">51 aval.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LISTA MOTOS -->
+    <div id="lista-motos" style="display:none;">
+      <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:2px;">Motos disponíveis</div>
+      <div class="car-list-item" id="motoItem1" style="flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <svg viewBox="0 0 90 55" fill="none" width="80" height="50" style="flex-shrink:0;border-radius:10px;">
+            <rect width="90" height="55" rx="6" fill="#FFF3E0"/>
+            <ellipse cx="22" cy="38" rx="14" ry="14" fill="none" stroke="#e65100" stroke-width="4"/>
+            <ellipse cx="68" cy="38" rx="14" ry="14" fill="none" stroke="#e65100" stroke-width="4"/>
+            <path d="M22 38 L36 28 L54 22 L68 38" stroke="#e65100" stroke-width="3" fill="none"/>
+            <path d="M50 22 L58 16 L66 20" stroke="#bf360c" stroke-width="2.5" fill="none"/>
+            <circle cx="22" cy="38" r="5" fill="#e65100"/>
+            <circle cx="68" cy="38" r="5" fill="#e65100"/>
+          </svg>
+          <div style="flex:1;">
+            <div class="car-name">Honda CB 500</div>
+            <div style="font-size:11px;color:var(--text-light);font-weight:700;">2022 · 500cc · Vermelha</div>
+            <div style="font-size:12px;font-weight:800;color:var(--green-dark);margin-top:2px;">R$ 90/dia &nbsp;·&nbsp; R$ 500/sem</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--cream-dark);padding-top:8px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:28px;height:28px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;">R</div>
+            <div>
+              <div style="font-size:12px;font-weight:800;color:var(--navy);">Ricardo</div>
+              <div style="font-size:11px;color:var(--text-light);font-weight:600;">São Paulo · Ipiranga</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:13px;font-weight:800;color:#F5C842;">★ 4.7</div>
+            <div style="font-size:10px;color:var(--text-light);font-weight:600;">14 aval.</div>
+          </div>
+        </div>
+      </div>
+      <div class="car-list-item" id="motoItem2" style="flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <svg viewBox="0 0 90 55" fill="none" width="80" height="50" style="flex-shrink:0;border-radius:10px;">
+            <rect width="90" height="55" rx="6" fill="#E8EAF6"/>
+            <ellipse cx="22" cy="38" rx="14" ry="14" fill="none" stroke="#303f9f" stroke-width="4"/>
+            <ellipse cx="68" cy="38" rx="14" ry="14" fill="none" stroke="#303f9f" stroke-width="4"/>
+            <path d="M22 38 L36 28 L54 22 L68 38" stroke="#303f9f" stroke-width="3" fill="none"/>
+            <path d="M50 22 L58 16 L66 20" stroke="#1a237e" stroke-width="2.5" fill="none"/>
+            <circle cx="22" cy="38" r="5" fill="#303f9f"/>
+            <circle cx="68" cy="38" r="5" fill="#303f9f"/>
+          </svg>
+          <div style="flex:1;">
+            <div class="car-name">Yamaha MT-07</div>
+            <div style="font-size:11px;color:var(--text-light);font-weight:700;">2023 · 689cc · Azul</div>
+            <div style="font-size:12px;font-weight:800;color:var(--green-dark);margin-top:2px;">R$ 110/dia &nbsp;·&nbsp; R$ 600/sem</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--cream-dark);padding-top:8px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:28px;height:28px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;">F</div>
+            <div>
+              <div style="font-size:12px;font-weight:800;color:var(--navy);">Felipe</div>
+              <div style="font-size:11px;color:var(--text-light);font-weight:600;">Santo André · Centro</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:13px;font-weight:800;color:#F5C842;">★ 5.0</div>
+            <div style="font-size:10px;color:var(--text-light);font-weight:600;">9 aval.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LISTA PESADOS -->
+    <div id="lista-pesados" style="display:none;">
+      <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:2px;">Veículos pesados</div>
+      <div class="car-list-item" id="pesadoItem1" style="flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <svg viewBox="0 0 90 55" fill="none" width="80" height="50" style="flex-shrink:0;border-radius:10px;">
+            <rect width="90" height="55" rx="6" fill="#ECEFF1"/>
+            <rect x="5" y="18" width="50" height="26" rx="4" fill="#607d8b"/>
+            <rect x="55" y="24" width="30" height="20" rx="3" fill="#455a64"/>
+            <rect x="57" y="26" width="14" height="12" rx="2" fill="#87CEEB" opacity="0.6"/>
+            <circle cx="18" cy="45" r="7" fill="#37474f"/><circle cx="18" cy="45" r="4" fill="#90a4ae"/>
+            <circle cx="55" cy="45" r="7" fill="#37474f"/><circle cx="55" cy="45" r="4" fill="#90a4ae"/>
+            <circle cx="75" cy="45" r="7" fill="#37474f"/><circle cx="75" cy="45" r="4" fill="#90a4ae"/>
+          </svg>
+          <div style="flex:1;">
+            <div class="car-name">Ford Cargo 1119</div>
+            <div style="font-size:11px;color:var(--text-light);font-weight:700;">2020 · Caminhão · Cinza</div>
+            <div style="font-size:12px;font-weight:800;color:var(--green-dark);margin-top:2px;">R$ 350/dia &nbsp;·&nbsp; R$ 1.800/sem</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--cream-dark);padding-top:8px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:28px;height:28px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;">C</div>
+            <div>
+              <div style="font-size:12px;font-weight:800;color:var(--navy);">Carlos</div>
+              <div style="font-size:11px;color:var(--text-light);font-weight:600;">Guarulhos · Centro</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:13px;font-weight:800;color:#F5C842;">★ 4.5</div>
+            <div style="font-size:10px;color:var(--text-light);font-weight:600;">7 aval.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- ══════════════════════════════════════
+     SCREEN 9 — DETALHES
+══════════════════════════════════════ -->
+<div class="screen" id="s-detalhes">
+  <div class="green-header" style="flex-direction:column;gap:10px;padding-bottom:12px;">
+    <div style="display:flex;align-items:center;gap:12px;width:100%;">
+      <button class="back-btn" id="detalhesBack" style="padding:0;">←</button>
+      <span class="green-header-title">Detalhes da Locação</span>
+    </div>
+    <div style="display:flex;gap:8px;width:100%;">
+      <button class="filtro-det-btn active-filtro-det" data-filtro="carros" style="flex:1;padding:7px 0;border-radius:50px;border:2px solid var(--navy);background:var(--navy);color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">🚗 Carros</button>
+      <button class="filtro-det-btn" data-filtro="motos" style="flex:1;padding:7px 0;border-radius:50px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:var(--navy);font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">🏍️ Motos</button>
+      <button class="filtro-det-btn" data-filtro="pesados" style="flex:1;padding:7px 0;border-radius:50px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:var(--navy);font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">🚛 Pesados</button>
+    </div>
+  </div>
+  <div class="cream-body">
+
+    <!-- Fotos -->
+    <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:2px;">Fotos do Veículo</div>
+    <div class="photo-slots">
+      <div class="photo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="#7A8FB5" stroke-width="1.5" width="22" height="22"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Foto 1</span></div>
+      <div class="photo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="#7A8FB5" stroke-width="1.5" width="22" height="22"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Foto 2</span></div>
+      <div class="photo-slot"><svg viewBox="0 0 24 24" fill="none" stroke="#7A8FB5" stroke-width="1.5" width="22" height="22"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Foto 3</span></div>
+    </div>
+
+    <!-- Car hero -->
+    <div style="background:#fff;border-radius:16px;display:flex;align-items:center;justify-content:center;height:100px;">
+      <svg viewBox="0 0 280 90" fill="none" width="260" height="90">
+        <ellipse cx="55" cy="68" rx="20" ry="28" fill="#1A2A5E" opacity="0.8" transform="rotate(-12 55 68)"/>
+        <ellipse cx="42" cy="74" rx="14" ry="22" fill="#253672" opacity="0.6" transform="rotate(5 42 74)"/>
+        <rect x="65" y="42" width="175" height="36" rx="8" fill="#1A2A5E"/>
+        <path d="M92 42 C97 22 115 12 148 12 L200 12 C222 12 235 22 238 42" fill="#1A2A5E"/>
+        <rect x="98" y="16" width="56" height="23" rx="3" fill="#7EC8E3" opacity="0.55"/>
+        <rect x="158" y="16" width="74" height="23" rx="3" fill="#7EC8E3" opacity="0.55"/>
+        <circle cx="105" cy="82" r="13" fill="#1A2A5E"/><circle cx="105" cy="82" r="7" fill="#7EC8E3" opacity="0.4"/>
+        <circle cx="205" cy="82" r="13" fill="#1A2A5E"/><circle cx="205" cy="82" r="7" fill="#7EC8E3" opacity="0.4"/>
+        <rect x="237" y="54" width="8" height="6" rx="2" fill="#7EC8E3"/>
+      </svg>
+    </div>
+
+    <!-- Dados do veículo -->
+    <div class="info-block">
+      <div class="info-block-title">Informações do Veículo</div>
+      <div style="display:flex;gap:12px;">
+        <div style="flex:1;">
+          <div class="info-row"><span class="info-key">Marca</span><span class="info-val">Honda</span></div>
+          <div class="info-row"><span class="info-key">Modelo</span><span class="info-val">HR-V 2023</span></div>
+          <div class="info-row"><span class="info-key">Tipo</span><span class="info-val">SUV</span></div>
+          <div class="info-row"><span class="info-key">Cor</span><span class="info-val">Branco</span></div>
+          <div class="info-row"><span class="info-key">Placa</span><span class="info-val">ABC-1234</span></div>
+        </div>
+        <div style="flex:1;">
+          <div class="info-row"><span class="info-key">Câmbio</span><span class="info-val">Automático</span></div>
+          <div class="info-row"><span class="info-key">Diária</span><span class="info-val">R$ 180</span></div>
+          <div class="info-row"><span class="info-key">Semanal</span><span class="info-val">R$ 980</span></div>
+          <div class="info-row"><span class="info-key">Mensal</span><span class="info-val">R$ 3.200</span></div>
+          <div class="info-row"><span class="info-key">Caução</span><span class="info-val">R$ 1.000</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Locador (dados ocultos) -->
+    <div class="info-block">
+      <div class="info-block-title">Sobre o Locador</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;flex-shrink:0;">M</div>
+        <div style="flex:1;">
+          <div style="font-size:16px;font-weight:800;color:var(--navy);">Maria</div>
+          <div style="font-size:12px;color:var(--text-light);font-weight:600;">📍 São Paulo · Pinheiros</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:18px;font-weight:800;color:#F5C842;">★ 4.8</div>
+          <div style="font-size:10px;color:var(--text-light);font-weight:600;">32 avaliações</div>
+        </div>
+      </div>
+      <div style="background:var(--cream-dark);border-radius:10px;padding:8px 12px;margin-top:10px;font-size:11px;font-weight:700;color:var(--text-light);text-align:center;">
+        🔒 Dados completos liberados após confirmação da reserva
+      </div>
+    </div>
+
+    <!-- ═══ SELEÇÃO DE PERÍODO ═══ -->
+    <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:2px;">Período da Locação</div>
+
+    <!-- Campos início / fim -->
+    <div style="display:flex;gap:10px;">
+      <div style="flex:1;background:#fff;border-radius:16px;padding:12px 14px;">
+        <div style="font-size:11px;font-weight:800;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Início</div>
+        <input id="dataInicio" type="date" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:700;color:var(--navy);background:transparent;width:100%;">
+      </div>
+      <div style="flex:1;background:#fff;border-radius:16px;padding:12px 14px;">
+        <div style="font-size:11px;font-weight:800;color:var(--text-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Fim</div>
+        <input id="dataFim" type="date" style="border:none;outline:none;font-family:Nunito,sans-serif;font-size:14px;font-weight:700;color:var(--navy);background:transparent;width:100%;">
+      </div>
+    </div>
+
+    <!-- Demonstrativo de valor -->
+    <div id="valorLocacao" style="background:var(--navy);border-radius:16px;padding:16px 18px;display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.6);" id="vlPeriodoLabel">7 dias</div>
+          <div style="font-size:24px;font-weight:900;color:#fff;font-family:'Sora',sans-serif;" id="vlTotal">R$ 980</div>
+          <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.6);" id="vlFaixa">faixa semanal</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;color:rgba(255,255,255,0.5);">Caução</div>
+          <div style="font-size:15px;font-weight:800;color:var(--green-light);">+ R$ 1.000</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.4);">devolvido ao fim</div>
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,0.12);margin-top:12px;padding-top:10px;display:flex;gap:16px;">
+        <div style="flex:1;text-align:center;">
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);">Diária</div>
+          <div style="font-size:13px;font-weight:800;color:#fff;">R$ 180</div>
+        </div>
+        <div style="flex:1;text-align:center;border-left:1px solid rgba(255,255,255,0.12);">
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);">Semanal</div>
+          <div style="font-size:13px;font-weight:800;color:var(--green-light);">R$ 980</div>
+        </div>
+        <div style="flex:1;text-align:center;border-left:1px solid rgba(255,255,255,0.12);">
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);">Mensal</div>
+          <div style="font-size:13px;font-weight:800;color:var(--green-light);">R$ 3.200</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Caixa informativa de economia -->
+    <div id="dicaEconomia" style="display:none;background:#FFF8E1;border:2px solid #FFC107;border-radius:16px;padding:14px 16px;">
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <span style="font-size:22px;">💡</span>
+        <div>
+          <div style="font-size:13px;font-weight:800;color:#795548;" id="dicaTitle">Dica de economia!</div>
+          <div style="font-size:12px;font-weight:600;color:#8D6E63;line-height:1.5;margin-top:3px;" id="dicaMsg"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendário -->
+    <div style="font-size:11px;font-weight:800;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;padding-left:2px;">Calendário de Disponibilidade</div>
+    <div class="cal-block">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <button id="calPrev" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--navy);font-weight:800;">‹</button>
+        <div class="cal-month" id="calMonthLabel" style="margin-bottom:0;">Outubro 2024</div>
+        <button id="calNext" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--navy);font-weight:800;">›</button>
+      </div>
+      <div class="cal-header">
+        <div class="cal-dname">D</div><div class="cal-dname">S</div><div class="cal-dname">T</div>
+        <div class="cal-dname">Q</div><div class="cal-dname">Q</div><div class="cal-dname">S</div>
+        <div class="cal-dname">S</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div style="display:flex;gap:12px;margin-top:8px;justify-content:center;">
+        <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:50%;background:var(--green-dark);"></div><span style="font-size:11px;font-weight:600;color:var(--text-light);">Início</span></div>
+        <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:50%;background:var(--green-light);"></div><span style="font-size:11px;font-weight:600;color:var(--text-light);">Período</span></div>
+        <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;border-radius:50%;background:#ccc;"></div><span style="font-size:11px;font-weight:600;color:var(--text-light);">Indisponível</span></div>
+      </div>
+    </div>
+
+    <button class="btn-navy" id="detalhesReservar">Reservar Agora</button>
+  </div>
+</div>
+<!-- ══════════════════════════════════════
+     SCREEN 10 — CONFIRMAR
+══════════════════════════════════════ -->
+<div class="screen" id="s-confirmar">
+  <div class="green-header">
+    <button class="back-btn" id="confirmarBack" style="padding:0;">←</button>
+    <span class="green-header-title">Confirmar Contratação</span>
+  </div>
+  <div class="cream-body">
+    <!-- Car image -->
+    <div style="height:130px;border-radius:16px;overflow:hidden;flex-shrink:0;">
+      <svg viewBox="0 0 350 130" fill="none" width="100%" height="130">
+        <rect width="350" height="130" fill="#b8d4a0"/>
+        <rect x="0" y="75" width="350" height="55" fill="#8ab870"/>
+        <rect x="60" y="45" width="230" height="55" rx="8" fill="#e0e0e0"/>
+        <path d="M90 45 C98 22 118 12 155 12 L220 12 C250 12 268 22 272 45" fill="#cfcfcf"/>
+        <rect x="98" y="16" width="70" height="26" rx="4" fill="#87CEEB" opacity="0.7"/>
+        <rect x="174" y="16" width="90" height="26" rx="4" fill="#87CEEB" opacity="0.7"/>
+        <circle cx="110" cy="101" r="18" fill="#555"/><circle cx="110" cy="101" r="10" fill="#999"/>
+        <circle cx="240" cy="101" r="18" fill="#555"/><circle cx="240" cy="101" r="10" fill="#999"/>
+        <rect x="270" y="67" width="12" height="10" rx="2" fill="#ffe066"/>
+      </svg>
+    </div>
+    <!-- Detalhes locação -->
+    <div class="confirm-block">
+      <div class="confirm-block-title">Detalhes do Locação</div>
+      <div class="c-row">
+        <div>
+          <div class="c-line"><b>Marca:</b> Honda</div>
+          <div class="c-line"><b>Modelo:</b> HR-V 2023</div>
+          <div class="c-line"><b>Período:</b> 20/10 – 27/10/2024 (7 dias)</div>
+        </div>
+        <svg viewBox="0 0 90 55" fill="none" width="80" height="50" style="flex-shrink:0;border-radius:8px;">
+          <rect width="90" height="55" rx="6" fill="#ffe0e0"/>
+          <rect x="10" y="22" width="70" height="20" rx="5" fill="#c0392b"/>
+          <path d="M22 22 C25 13 33 8 48 8 L63 8 C74 8 80 13 82 22" fill="#a93226"/>
+          <rect x="24" y="10" width="20" height="10" rx="2" fill="#87CEEB" opacity="0.6"/>
+          <rect x="46" y="10" width="27" height="10" rx="2" fill="#87CEEB" opacity="0.6"/>
+          <circle cx="25" cy="43" r="7" fill="#555"/><circle cx="25" cy="43" r="4" fill="#aaa"/>
+          <circle cx="65" cy="43" r="7" fill="#555"/><circle cx="65" cy="43" r="4" fill="#aaa"/>
+        </svg>
+      </div>
+    </div>
+    <!-- Card Locador oculto -->
+    <div class="confirm-block">
+      <div class="confirm-block-title">Locador</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;flex-shrink:0;">M</div>
+        <div style="flex:1;">
+          <div style="font-size:16px;font-weight:800;color:var(--navy);">Maria</div>
+          <div style="font-size:12px;color:var(--text-light);font-weight:600;">📍 São Paulo · Pinheiros</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:18px;font-weight:800;color:#F5C842;">★ 4.8</div>
+          <div style="font-size:10px;color:var(--text-light);font-weight:600;">32 avaliações</div>
+        </div>
+      </div>
+      <div style="background:var(--green-pale);border-radius:10px;padding:8px 12px;margin-top:10px;font-size:11px;font-weight:700;color:var(--green-dark);text-align:center;">
+        ✅ Dados completos liberados após confirmação do pagamento
+      </div>
+    </div>
+    <!-- Dados -->
+    <div class="confirm-block">
+      <div class="c-row" style="align-items:center;margin-bottom:10px;">
+        <div class="confirm-block-title" style="margin:0;">Seus Dados (Locatário)</div>
+        <div class="total-pill">Total: R$ 1.260,00</div>
+      </div>
+      <div class="c-line"><b>Nome:</b> João Silva</div>
+      <div class="c-line"><b>CPF:</b> 123.456.789-00</div>
+      <div class="c-line"><b>Email:</b> joao.silva@email.com</div>
+      <div class="c-line"><b>Celular:</b> (11) 99876-5432</div>
+      <div class="c-line" style="margin-top:8px;font-size:14px;font-weight:800;color:var(--navy);">Total a Pagar: R$ 1.260,00</div>
+    </div>
+    <!-- Pagamento -->
+    <div class="confirm-block">
+      <div class="confirm-block-title">Forma de Pagamento</div>
+      <div class="pay-tabs">
+        <div class="pay-tab on" id="payCredit">Cartão</div>
+        <div class="pay-tab" id="payBoleto">Boleto</div>
+        <div class="pay-tab" id="payPix">Pix</div>
+      </div>
+      <input class="pay-input" type="text" placeholder="Número do cartão">
+      <div style="display:flex;gap:8px;">
+        <input class="pay-input" type="text" placeholder="CVV" style="flex:0.4;margin-bottom:0;">
+        <input class="pay-input" type="text" placeholder="Validade" style="flex:0.6;margin-bottom:0;">
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:10px;">
+        <span style="color:var(--green-dark);font-size:18px;">✓</span>
+        <span style="font-size:12px;font-weight:700;color:var(--navy);">Nº: #20241020-007</span>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--navy);text-decoration:underline;cursor:pointer;margin-top:8px;">📄 Visualizar Contrato em PDF</div>
+    </div>
+    <div style="height:10px;flex-shrink:0;"></div>
+  </div>
+  <div class="confirm-footer">
+    <button class="btn-navy" id="confirmarPagar">Confirmar Pagamento</button>
+    <button class="btn-navy" id="confirmarFinalizar" style="background:var(--green-dark);">🎉 Finalizar e Confirmar!</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SCREEN: VEÍCULO CADASTRADO
+══════════════════════════════════════ -->
+<div class="screen" id="s-cad-veiculo-ok">
+  <div style="background:var(--navy);flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px;">
+    <div style="font-size:80px;">🎉</div>
+    <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:800;color:#fff;text-align:center;line-height:1.1;">Veículo<br>cadastrado!</div>
+    <div style="font-size:15px;color:rgba(255,255,255,0.7);text-align:center;font-weight:600;line-height:1.6;">Seu veículo já está disponível<br>para locação na plataforma.</div>
+    <div style="background:rgba(255,255,255,0.1);border-radius:18px;padding:18px 20px;width:100%;display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:24px;">📋</span>
+        <div>
+          <div style="font-size:13px;font-weight:800;color:#fff;">Contrato gerado</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:600;">Disponível para download em PDF</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:24px;">🔔</span>
+        <div>
+          <div style="font-size:13px;font-weight:800;color:#fff;">Notificações ativas</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:600;">Você será avisado quando alguém reservar</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:24px;">💰</span>
+        <div>
+          <div style="font-size:13px;font-weight:800;color:#fff;">Caução garantido</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);font-weight:600;">Cobrado automaticamente no fechamento</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-navy" id="cadOkVerOfertas" style="background:var(--green);color:var(--navy);margin-top:8px;width:100%;">Ver painel do locador</button>
+    <button id="cadOkNovoCadastro" style="background:transparent;border:2px solid rgba(255,255,255,0.4);color:#fff;border-radius:50px;padding:14px;font-family:Nunito,sans-serif;font-size:16px;font-weight:800;cursor:pointer;width:100%;">+ Cadastrar outro veículo</button>
+  </div>
+</div>
+
+</div><!-- end .phone -->
+
+<script>
+(function() {
+  // ── Navigation ──────────────────────────────
+  function goTo(id) {
+    document.querySelectorAll('.screen').forEach(function(s) {
+      s.classList.remove('active');
+    });
+    var target = document.getElementById(id);
+    if (target) target.classList.add('active');
+  }
+
+  // ── Toggle password ──────────────────────────
+  function togglePwd(inputId, eyeEl) {
+    var inp = document.getElementById(inputId);
+    if (!inp) return;
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    eyeEl.style.opacity = inp.type === 'text' ? '1' : '0.4';
+  }
+
+  // ── Calendar ─────────────────────────────────
+  // ── Prices (mock for HR-V) ───────────────────
+  var PRECO_DIARIO  = 180;
+  var PRECO_SEMANAL = 980;
+  var PRECO_MENSAL  = 3200;
+  var CAUCAO        = 1000;
+
+  // ── Calendar state ────────────────────────────
+  var calYear  = 2024, calMonth = 9; // 0-indexed → Oct
+  var UNAVAIL  = [3,4,5,12,13,19,28,29,30]; // mock indisponível
+  var calStart = null, calEnd = null;
+
+  function buildCalendar() {
+    var grid  = document.getElementById('calGrid');
+    var label = document.getElementById('calMonthLabel');
+    if (!grid) return;
+    grid.innerHTML = '';
+    var months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                  'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    if (label) label.textContent = months[calMonth] + ' ' + calYear;
+
+    var firstDay = new Date(calYear, calMonth, 1).getDay();
+    var daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+
+    for (var i = 0; i < firstDay; i++) {
+      var e = document.createElement('div');
+      e.className = 'cal-day empty';
+      grid.appendChild(e);
+    }
+    for (var d = 1; d <= daysInMonth; d++) {
+      var cell = document.createElement('div');
+      var ds = new Date(calYear, calMonth, d);
+      var today = new Date(); today.setHours(0,0,0,0);
+      var isPast = ds < today;
+      var isUnavail = UNAVAIL.indexOf(d) !== -1;
+
+      if (isPast || isUnavail) {
+        cell.className = 'cal-day' + (isPast ? ' empty' : '');
+        cell.style.background = '#ddd';
+        cell.style.color = '#aaa';
+        cell.style.cursor = 'default';
+        cell.style.borderRadius = '8px';
+      } else if (calStart && calEnd) {
+        var ds2 = new Date(calYear, calMonth, d);
+        if (d === calStart) { cell.className = 'cal-day sel'; }
+        else if (d === calEnd) { cell.className = 'cal-day sel'; }
+        else if (d > calStart && d < calEnd) { cell.className = 'cal-day avail'; cell.style.background='var(--green-light)'; cell.style.borderRadius='0'; }
+        else { cell.className = 'cal-day avail'; }
+      } else if (calStart && d === calStart) {
+        cell.className = 'cal-day sel';
+      } else {
+        cell.className = 'cal-day avail';
+      }
+      cell.textContent = d;
+
+      if (!isPast && !isUnavail) {
+        (function(day) {
+          cell.addEventListener('click', function() {
+            if (!calStart || (calStart && calEnd)) {
+              calStart = day; calEnd = null;
+            } else if (day > calStart) {
+              calEnd = day;
+              // sync inputs
+              var pad = function(n){return n<10?'0'+n:n;};
+              var si = document.getElementById('dataInicio');
+              var sf = document.getElementById('dataFim');
+              if(si) si.value = calYear+'-'+pad(calMonth+1)+'-'+pad(calStart);
+              if(sf) sf.value = calYear+'-'+pad(calMonth+1)+'-'+pad(calEnd);
+              calcularValor();
+            } else {
+              calStart = day; calEnd = null;
+            }
+            buildCalendar();
+          });
+        })(d);
+      }
+      grid.appendChild(cell);
+    }
+  }
+
+  function calcularValor() {
+    var si = document.getElementById('dataInicio');
+    var sf = document.getElementById('dataFim');
+    var vDiv = document.getElementById('valorLocacao');
+    var dica = document.getElementById('dicaEconomia');
+    if (!si || !sf || !vDiv) return;
+
+    var ini = si.value ? new Date(si.value) : null;
+    var fim = sf.value ? new Date(sf.value) : null;
+    if (!ini || !fim || fim <= ini) { vDiv.style.display='none'; if(dica) dica.style.display='none'; return; }
+
+    var dias = Math.round((fim - ini) / 86400000);
+    var total, faixa;
+    if (dias >= 28) {
+      var meses = Math.floor(dias/28);
+      var resto = dias % 28;
+      total = meses * PRECO_MENSAL + Math.ceil(resto/7) * PRECO_SEMANAL;
+      faixa = 'faixa mensal';
+    } else if (dias >= 7) {
+      var semanas = Math.floor(dias/7);
+      var resto2 = dias % 7;
+      total = semanas * PRECO_SEMANAL + resto2 * PRECO_DIARIO;
+      faixa = 'faixa semanal';
+    } else {
+      total = dias * PRECO_DIARIO;
+      faixa = 'faixa diária';
+    }
+
+    document.getElementById('vlPeriodoLabel').textContent = dias + (dias===1?' dia':' dias');
+    document.getElementById('vlTotal').textContent = 'R$ ' + total.toLocaleString('pt-BR');
+    document.getElementById('vlFaixa').textContent = faixa;
+    vDiv.style.display = 'block';
+
+    // Dica de economia
+    var dicaMsg = document.getElementById('dicaMsg');
+    var dicaTit = document.getElementById('dicaTitle');
+    if (dica && dicaMsg) {
+      var msg = '';
+      if (dias >= 1 && dias < 7) {
+        var faltam = 7 - dias;
+        var economiaS = (dias * PRECO_DIARIO) - PRECO_SEMANAL;
+        // economia = quanto paga a mais na diária vs semanal
+        var cDiario = dias * PRECO_DIARIO;
+        var economia2 = PRECO_SEMANAL - cDiario; // negativo = semanal mais caro, positivo = diária mais cara
+        if (economia2 < 0) {
+          // diária é mais barata — não mostrar dica
+        } else {
+          msg = 'Adicionando mais ' + faltam + ' dia' + (faltam===1?'':'s') + ' você paga a faixa semanal (R$ ' + PRECO_SEMANAL.toLocaleString('pt-BR') + ') e economiza R$ ' + economia2.toLocaleString('pt-BR') + ' em relação às diárias separadas!';
+        }
+      } else if (dias >= 7 && dias < 28) {
+        var faltam2 = 28 - dias;
+        if (faltam2 <= 7) {
+          var semanas2 = Math.floor(dias/7), resto3 = dias % 7;
+          var custoAtual2 = semanas2 * PRECO_SEMANAL + resto3 * PRECO_DIARIO;
+          if (PRECO_MENSAL < custoAtual2) {
+            var econ = custoAtual2 - PRECO_MENSAL;
+            msg = 'Adicionando mais ' + faltam2 + ' dia' + (faltam2===1?'':'s') + ' você paga a faixa mensal (R$ ' + PRECO_MENSAL.toLocaleString('pt-BR') + ') e economiza R$ ' + econ.toLocaleString('pt-BR') + '!';
+          }
+        }
+      }
+      if (msg) {
+        dicaTit.textContent = '💡 Dica de economia!';
+        dicaMsg.textContent = msg;
+        dica.style.display = 'block';
+      } else {
+        dica.style.display = 'none';
+      }
+    }
+  }
+
+  // ── Success overlay ──────────────────────────
+  function showSuccess() {
+    document.getElementById('successOverlay').classList.add('show');
+  }
+
+  // ── Wire up all buttons ──────────────────────
+  function wire(id, fn) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('click', fn);
+  }
+
+  // Splash
+  wire('splashEntrar',    function() { goTo('s-login'); });
+  wire('splashCadastrar', function() { goTo('s-escolha'); });
+
+  // Login
+  wire('loginBack',       function() { goTo('s-splash'); });
+  wire('loginEnter',      function() { goTo('s-ofertas'); });
+  wire('loginGoogle',     function() { goTo('s-ofertas'); });
+  wire('loginApple',      function() { goTo('s-ofertas'); });
+  wire('loginFacebook',   function() { goTo('s-ofertas'); });
+  wire('loginGoRegister', function() { goTo('s-escolha'); });
+  wire('loginEye',        function() { togglePwd('loginPwd', this); });
+
+  // Escolha tipo
+  wire('escolhaBack',       function() { goTo('s-splash'); });
+  wire('escolhaLocatario',  function() { goTo('s-expl-locatario'); });
+  wire('escolhaLocador',    function() { goTo('s-expl-locador'); });
+
+  // Explicação locatário
+  wire('explLocatarioBack',     function() { goTo('s-escolha'); });
+  wire('explLocatarioCriar',    function() { goTo('s-criar'); });
+  wire('explLocatarioVerOutro', function() { goTo('s-expl-locador'); });
+
+  // Explicação locador
+  wire('explLocadorBack',     function() { goTo('s-escolha'); });
+  wire('explLocadorCriar',    function() { goTo('s-info'); });
+  wire('explLocadorVerOutro', function() { goTo('s-expl-locatario'); });
+
+  // Criar conta
+  wire('criarBack',      function() { goTo('s-escolha'); });
+  wire('criarContinuar', function() { goTo('s-ofertas'); });
+  wire('tabLocatario',   function() {
+    document.getElementById('tabLocatario').classList.add('active');
+    document.getElementById('tabLocador').classList.remove('active');
+  });
+  wire('tabLocador', function() {
+    document.getElementById('tabLocador').classList.add('active');
+    document.getElementById('tabLocatario').classList.remove('active');
+  });
+
+  // Info cadastral
+  wire('infoBack',      function() { goTo('s-escolha'); });
+  wire('infoContinuar', function() { goTo('s-locador-form'); });
+
+  // Locador form
+  wire('locadorFormBack',      function() { goTo('s-info'); });
+  // locadorFormContinuar is handled by validation block above
+
+  // Cadastro veículo
+  wire('cadVeiculoBack',   function() { goTo('s-locador-form'); });
+  wire('cadVeiculoSalvar', function() {
+    var semanal = document.getElementById('cv-semanal').value;
+    var caucao  = document.getElementById('cv-caucao').value;
+    var marca   = document.getElementById('cv-marca').value;
+    if (!marca || !semanal || !caucao) {
+      alert('Preencha ao menos: Marca, Valor semanal e Caução.');
+      return;
+    }
+    goTo('s-cad-veiculo-ok');
+  });
+
+  // Tipo de veículo chips
+  document.querySelectorAll('.tipo-veiculo-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.tipo-veiculo-btn').forEach(function(b) {
+        b.style.background = '#fff';
+        b.style.color = 'var(--navy)';
+        b.style.borderColor = 'var(--cream-dark)';
+      });
+      btn.style.background = 'var(--navy)';
+      btn.style.color = '#fff';
+      btn.style.borderColor = 'var(--navy)';
+    });
+  });
+
+  // Câmbio chips
+  document.querySelectorAll('.cambio-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.cambio-btn').forEach(function(b) {
+        b.style.background = '#fff';
+        b.style.color = 'var(--navy)';
+        b.style.borderColor = 'var(--cream-dark)';
+      });
+      btn.style.background = 'var(--navy)';
+      btn.style.color = '#fff';
+      btn.style.borderColor = 'var(--navy)';
+    });
+  });
+
+  // Placa uppercase
+  var placaInput = document.getElementById('cv-placa');
+  if (placaInput) {
+    placaInput.addEventListener('input', function() {
+      this.value = this.value.toUpperCase();
+    });
+  }
+
+  // Seguro toggle
+  var seguroOn = false;
+  var seguroToggle = document.getElementById('seguroToggle');
+  var seguroInput = document.getElementById('cv-seguro');
+  if (seguroToggle) {
+    seguroInput.disabled = true;
+    seguroInput.placeholder = 'Desativado';
+    seguroToggle.addEventListener('click', function() {
+      seguroOn = !seguroOn;
+      seguroToggle.style.background = seguroOn ? '#5C6BC0' : '#ccc';
+      document.getElementById('seguroThumb').style.left = seguroOn ? '20px' : '2px';
+      seguroInput.disabled = !seguroOn;
+      seguroInput.placeholder = seguroOn ? '0,00' : 'Desativado';
+      if (!seguroOn) seguroInput.value = '';
+    });
+  }
+  wire('lfEye1', function() { togglePwd('lfPwd1', document.getElementById('lfEye1')); });
+  wire('lfEye2', function() { togglePwd('lfPwd2', document.getElementById('lfEye2')); });
+
+  // Ofertas
+  wire('ofertasBack',        function() { goTo('s-splash'); });
+
+  // ── Filtros Carros / Motos / Pesados ─────────
+  var filtros = ['filtroCarros','filtroMotos','filtroPesados'];
+  var listas  = {'filtroCarros':'lista-carros','filtroMotos':'lista-motos','filtroPesados':'lista-pesados'};
+  filtros.forEach(function(fid) {
+    var btn = document.getElementById(fid);
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      filtros.forEach(function(b) {
+        var el = document.getElementById(b);
+        if (!el) return;
+        el.style.background = 'transparent';
+        el.style.color = 'var(--navy)';
+        el.style.borderColor = 'rgba(255,255,255,0.4)';
+      });
+      btn.style.background = 'var(--navy)';
+      btn.style.color = '#fff';
+      btn.style.borderColor = 'var(--navy)';
+      Object.values(listas).forEach(function(lid) {
+        var l = document.getElementById(lid);
+        if (l) l.style.display = 'none';
+      });
+      var target = document.getElementById(listas[fid]);
+      if (target) target.style.display = 'block';
+    });
+  });
+
+  // ── Date inputs → calc ────────────────────────
+  ['dataInicio','dataFim'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('change', function() {
+      var si = document.getElementById('dataInicio').value;
+      var sf = document.getElementById('dataFim').value;
+      if (si) { var p=si.split('-'); calYear=parseInt(p[0]); calMonth=parseInt(p[1])-1; calStart=parseInt(p[2]); calEnd=null; }
+      if (sf) { var p2=sf.split('-'); calEnd=parseInt(p2[2]); }
+      buildCalendar();
+      calcularValor();
+    });
+  });
+
+  // ── Calendar navigation ───────────────────────
+  wire('calPrev', function() { calMonth--; if(calMonth<0){calMonth=11;calYear--;} buildCalendar(); });
+  wire('calNext', function() { calMonth++; if(calMonth>11){calMonth=0;calYear++;} buildCalendar(); });
+
+  // ── Filtros na tela Detalhes ──────────────────
+  document.querySelectorAll('.filtro-det-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filtro-det-btn').forEach(function(b) {
+        b.style.background = 'transparent';
+        b.style.color = 'var(--navy)';
+        b.style.borderColor = 'rgba(255,255,255,0.4)';
+      });
+      btn.style.background = 'var(--navy)';
+      btn.style.color = '#fff';
+      btn.style.borderColor = 'var(--navy)';
+      // navegação vai para ofertas com filtro ativo
+      goTo('s-ofertas');
+    });
+  });
+  wire('ofertasVerDetalhes', function() { goTo('s-detalhes'); });
+  wire('carItem1', function() { goTo('s-detalhes'); });
+  wire('carItem2', function() { goTo('s-detalhes'); });
+  wire('carItem3', function() { goTo('s-detalhes'); });
+  wire('carItem4', function() { goTo('s-detalhes'); });
+
+  // Detalhes
+  wire('detalhesBack',     function() { goTo('s-ofertas'); });
+  wire('detalhesReservar', function() { goTo('s-confirmar'); });
+
+  // Confirmar
+  wire('confirmarBack',      function() { goTo('s-detalhes'); });
+  wire('confirmarPagar',     function() { showSuccess(); });
+  wire('confirmarFinalizar', function() { showSuccess(); });
+
+  // Success close
+  wire('successCloseBtn', function() {
+    document.getElementById('successOverlay').classList.remove('show');
+    goTo('s-splash');
+  });
+
+  // Veículo cadastrado - ok screen
+  wire('cadOkVerOfertas',     function() { goTo('s-ofertas'); });
+  wire('cadOkNovoCadastro',   function() { goTo('s-cad-veiculo'); });
+
+  // Pay tabs
+  ['payCredit','payBoleto','payPix'].forEach(function(id) {
+    wire(id, function() {
+      document.querySelectorAll('.pay-tab').forEach(function(t) { t.classList.remove('on'); });
+      document.getElementById(id).classList.add('on');
+    });
+  });
+
+  // ── CPF validation ────────────────────────────
+  function validateCPF(cpf) {
+    cpf = cpf.replace(/\D/g, '');
+    if (cpf.length !== 11) return false;
+    if (/^(\d)\1{10}$/.test(cpf)) return false;
+    var sum = 0;
+    for (var i = 0; i < 9; i++) sum += parseInt(cpf[i]) * (10 - i);
+    var r = (sum * 10) % 11;
+    if (r === 10 || r === 11) r = 0;
+    if (r !== parseInt(cpf[9])) return false;
+    sum = 0;
+    for (var i = 0; i < 10; i++) sum += parseInt(cpf[i]) * (11 - i);
+    r = (sum * 10) % 11;
+    if (r === 10 || r === 11) r = 0;
+    return r === parseInt(cpf[10]);
+  }
+
+  function maskCPF(v) {
+    v = v.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 9) return v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+    if (v.length > 6) return v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+    if (v.length > 3) return v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+    return v;
+  }
+
+  function maskPhone(v) {
+    v = v.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 10) return v.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    if (v.length > 6)  return v.replace(/(\d{2})(\d{4,5})(\d{0,4})/, '($1) $2-$3');
+    if (v.length > 2)  return v.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+    return v;
+  }
+
+  function maskCEP(v) {
+    v = v.replace(/\D/g, '').slice(0, 8);
+    if (v.length > 5) return v.replace(/(\d{5})(\d{1,3})/, '$1-$2');
+    return v;
+  }
+
+  // CPF input
+  var cpfInput = document.getElementById('lf-cpf');
+  if (cpfInput) {
+    cpfInput.addEventListener('input', function() {
+      this.value = maskCPF(this.value);
+      var raw = this.value.replace(/\D/g, '');
+      var status = document.getElementById('cpf-status');
+      var feedback = document.getElementById('cpf-feedback');
+      if (raw.length < 11) {
+        status.textContent = '';
+        feedback.style.display = 'none';
+      } else if (validateCPF(raw)) {
+        status.textContent = '✅';
+        feedback.style.display = 'block';
+        feedback.style.color = 'var(--green-dark)';
+        feedback.textContent = '✓ CPF válido';
+      } else {
+        status.textContent = '❌';
+        feedback.style.display = 'block';
+        feedback.style.color = '#e53935';
+        feedback.textContent = '✗ CPF inválido — verifique os números digitados';
+      }
+    });
+  }
+
+  // Phone masks
+  var tel1 = document.getElementById('lf-tel1');
+  var tel2 = document.getElementById('lf-tel2');
+  if (tel1) tel1.addEventListener('input', function() { this.value = maskPhone(this.value); });
+  if (tel2) tel2.addEventListener('input', function() { this.value = maskPhone(this.value); });
+
+  // CEP lookup via ViaCEP
+  var cepInput = document.getElementById('lf-cep');
+  if (cepInput) {
+    cepInput.addEventListener('input', function() {
+      this.value = maskCEP(this.value);
+      var raw = this.value.replace(/\D/g, '');
+      var st = document.getElementById('cep-status');
+      if (raw.length === 8) {
+        st.textContent = '⏳';
+        fetch('https://viacep.com.br/ws/' + raw + '/json/')
+          .then(function(r) { return r.json(); })
+          .then(function(d) {
+            if (d.erro) {
+              st.textContent = '❌';
+              document.getElementById('lf-rua').value = '';
+              document.getElementById('lf-bairro').value = '';
+              document.getElementById('lf-cidade').value = '';
+              document.getElementById('lf-uf').value = '';
+              document.getElementById('lf-rua').placeholder = 'CEP não encontrado';
+            } else {
+              st.textContent = '✅';
+              document.getElementById('lf-rua').value    = d.logradouro || '';
+              document.getElementById('lf-bairro').value = d.bairro || '';
+              document.getElementById('lf-cidade').value = d.localidade || '';
+              document.getElementById('lf-uf').value     = d.uf || '';
+              document.getElementById('lf-num').focus();
+            }
+          })
+          .catch(function() { st.textContent = '❌'; });
+      } else {
+        st.textContent = '';
+      }
+    });
+  }
+
+  // Locador form validation on submit
+  var locadorFormContinuarBtn = document.getElementById('locadorFormContinuar');
+  if (locadorFormContinuarBtn) {
+    locadorFormContinuarBtn.addEventListener('click', function() {
+      var cpfRaw = (document.getElementById('lf-cpf').value || '').replace(/\D/g, '');
+      if (!validateCPF(cpfRaw)) {
+        document.getElementById('cpf-status').textContent = '❌';
+        var fb = document.getElementById('cpf-feedback');
+        fb.style.display = 'block';
+        fb.style.color = '#e53935';
+        fb.textContent = '✗ Por favor, insira um CPF válido para continuar';
+        document.getElementById('lf-cpf').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      goTo('s-cad-veiculo');
+    });
+  }
+
+  buildCalendar();
+})();
+</script>
+</body>
+</html>
